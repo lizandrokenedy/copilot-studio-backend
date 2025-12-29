@@ -1,0 +1,240 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-01-01T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "wrk_copilot_back",
+      "_type": "workspace",
+      "name": "copilot-back",
+      "description": ""
+    },
+    {
+      "_id": "env_copilot_back_base",
+      "_type": "environment",
+      "parentId": "wrk_copilot_back",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3000",
+        "jwt_token": "",
+        "user_email": "user@example.com",
+        "user_password": "minhaSenha123",
+        "display_name": "Usuario",
+        "conversation_id": ""
+      },
+      "dataPropertyOrder": null,
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1
+    },
+    {
+      "_id": "fld_auth",
+      "_type": "request_group",
+      "parentId": "wrk_copilot_back",
+      "name": "Auth",
+      "description": ""
+    },
+    {
+      "_id": "req_register",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Register",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/auth/register",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"{{ _.user_email }}\",\n  \"password\": \"{{ _.user_password }}\",\n  \"displayName\": \"{{ _.display_name }}\"\n}"
+      }
+    },
+    {
+      "_id": "req_login",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Login",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/auth/login",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"{{ _.user_email }}\",\n  \"password\": \"{{ _.user_password }}\"\n}"
+      }
+    },
+    {
+      "_id": "fld_users",
+      "_type": "request_group",
+      "parentId": "wrk_copilot_back",
+      "name": "Users",
+      "description": ""
+    },
+    {
+      "_id": "req_users_me_get",
+      "_type": "request",
+      "parentId": "fld_users",
+      "name": "Get Me",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/users/me",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.jwt_token }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_users_me_patch",
+      "_type": "request",
+      "parentId": "fld_users",
+      "name": "Update Me",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/api/users/me",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.jwt_token }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"displayName\": \"{{ _.display_name }}\"\n}"
+      }
+    },
+    {
+      "_id": "req_users_me_delete",
+      "_type": "request",
+      "parentId": "fld_users",
+      "name": "Delete Me",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/api/users/me",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.jwt_token }}"
+        }
+      ]
+    },
+    {
+      "_id": "fld_conversations",
+      "_type": "request_group",
+      "parentId": "wrk_copilot_back",
+      "name": "Conversations",
+      "description": ""
+    },
+    {
+      "_id": "req_conversations_list",
+      "_type": "request",
+      "parentId": "fld_conversations",
+      "name": "List Conversations",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/conversations",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.jwt_token }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_conversations_create",
+      "_type": "request",
+      "parentId": "fld_conversations",
+      "name": "Create Conversation",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/conversations",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.jwt_token }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Minha conversa\"\n}"
+      }
+    },
+    {
+      "_id": "req_conversations_get",
+      "_type": "request",
+      "parentId": "fld_conversations",
+      "name": "Get Conversation",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/conversations/{{ _.conversation_id }}",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.jwt_token }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_conversations_message",
+      "_type": "request",
+      "parentId": "fld_conversations",
+      "name": "Add Message",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/conversations/{{ _.conversation_id }}/messages",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.jwt_token }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"role\": \"user\",\n  \"content\": \"Ola\"\n}"
+      }
+    },
+    {
+      "_id": "fld_context",
+      "_type": "request_group",
+      "parentId": "wrk_copilot_back",
+      "name": "Context",
+      "description": ""
+    },
+    {
+      "_id": "req_context_get",
+      "_type": "request",
+      "parentId": "fld_context",
+      "name": "Get Context",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/context",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.jwt_token }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_health",
+      "_type": "request",
+      "parentId": "wrk_copilot_back",
+      "name": "Health",
+      "method": "GET",
+      "url": "{{ _.base_url }}/health"
+    }
+  ]
+}
