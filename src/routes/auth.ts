@@ -1,6 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { type Secret, type SignOptions } from "jsonwebtoken";
+import type { StringValue } from "ms";
 import { prisma } from "../config/prisma";
 import { env } from "../config/env";
 
@@ -46,10 +47,14 @@ router.post("/register", async (req, res) => {
       },
     });
 
+    const jwtSecret = env.jwtSecret as Secret;
+    const jwtOptions: SignOptions = {
+      expiresIn: env.jwtExpiresIn as StringValue,
+    };
     const token = jwt.sign(
       { sub: created.id, email: created.email },
-      env.jwtSecret,
-      { expiresIn: env.jwtExpiresIn }
+      jwtSecret,
+      jwtOptions
     );
 
     return res.status(201).json({
@@ -93,10 +98,14 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
+    const jwtSecret = env.jwtSecret as Secret;
+    const jwtOptions: SignOptions = {
+      expiresIn: env.jwtExpiresIn as StringValue,
+    };
     const token = jwt.sign(
       { sub: user.id, email: user.email },
-      env.jwtSecret,
-      { expiresIn: env.jwtExpiresIn }
+      jwtSecret,
+      jwtOptions
     );
 
     return res.json({
