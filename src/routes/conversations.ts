@@ -3,6 +3,7 @@ import type { AuthenticatedRequest } from "../middleware/auth";
 import {
   addConversationMessage,
   createConversation,
+  deleteUserConversations,
   getConversationDetail,
   listUserConversations,
 } from "../services/copilotClient";
@@ -27,6 +28,10 @@ function mapErrorToStatus(message: string) {
 
   if (message.includes("User not found")) {
     return 404;
+  }
+
+  if (message.includes("CONVERSATION_BUSY")) {
+    return 429;
   }
 
   return 500;
@@ -61,6 +66,21 @@ router.post("/conversations", async (req: AuthenticatedRequest, res) => {
 
     const result = await createConversation(user, { title });
     return res.status(201).json(result);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unexpected error";
+    return res.status(mapErrorToStatus(message)).json({ error: message });
+  }
+});
+
+router.delete("/conversations", async (req: AuthenticatedRequest, res) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      return res.status(401).json({ error: "Missing user context" });
+    }
+
+    const result = await deleteUserConversations(user);
+    return res.json(result);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unexpected error";
     return res.status(mapErrorToStatus(message)).json({ error: message });

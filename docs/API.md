@@ -14,6 +14,21 @@ Base URL: `http://localhost:3000`
 
 ## Endpoints
 
+### GET /
+
+Retorna informacoes basicas da API.
+
+Requisitos:
+- Nenhum header especial.
+
+Resposta 200:
+```json
+{
+  "name": "copilot-back",
+  "version": "0.1.0"
+}
+```
+
 ### GET /health
 
 Status de saude do servico.
@@ -544,6 +559,72 @@ Resposta 500:
 }
 ```
 
+### DELETE /api/conversations
+
+Remove todas as conversas do usuario autenticado e suas mensagens.
+
+Requisitos:
+- Header `Authorization: Bearer <token>`
+- Variavel `DATABASE_URL` configurada (veja `.env.example`)
+
+Resposta 200:
+```json
+{
+  "deletedConversations": 3,
+  "deletedMessages": 42,
+  "source": "db"
+}
+```
+
+Resposta 401:
+```json
+{
+  "error": "Missing bearer token"
+}
+```
+
+Resposta 401 (token invalido):
+```json
+{
+  "error": "Invalid token"
+}
+```
+
+Resposta 401 (token vazio):
+```json
+{
+  "error": "Empty bearer token"
+}
+```
+
+Resposta 401 (quando o usuario nao foi carregado no request):
+```json
+{
+  "error": "Missing user context"
+}
+```
+
+Resposta 404 (usuario nao encontrado):
+```json
+{
+  "error": "User not found"
+}
+```
+
+Resposta 503 (quando `DATABASE_URL` nao esta configurada):
+```json
+{
+  "error": "DATABASE_URL is not set"
+}
+```
+
+Resposta 500:
+```json
+{
+  "error": "Unexpected error"
+}
+```
+
 ### GET /api/conversations/:id
 
 Recupera uma conversa e suas mensagens, incluindo um resumo do contexto do usuario.
@@ -733,6 +814,13 @@ Resposta 503 (quando `COPILOT_DIRECT_LINE_SECRET` nao esta configurado):
 ```json
 {
   "error": "COPILOT_DIRECT_LINE_SECRET is not set"
+}
+```
+
+Resposta 429 (quando ha uma requisicao concorrente para a mesma conversa):
+```json
+{
+  "error": "CONVERSATION_BUSY: Aguarde a resposta anterior antes de enviar nova mensagem."
 }
 ```
 

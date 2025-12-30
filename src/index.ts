@@ -47,6 +47,6 @@ app.use((
   res.status(500).json({ error: message });
 });
 
-app.listen(env.port, () => {
+app.listen(env.port, "0.0.0.0", () => {
   console.log(`Server running on port ${env.port}`);
 });
