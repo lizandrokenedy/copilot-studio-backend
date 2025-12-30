@@ -4,11 +4,12 @@ services:
   db:
     image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: copilot
-      MYSQL_USER: copilot
-      MYSQL_PASSWORD: copilot
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
@@ -16,13 +17,14 @@ services:
 
   api:
     build: .
+    restart: always
     environment:
-      PORT: 3000
-      DATABASE_URL: mysql://copilot:copilot@db:3306/copilot
-      COPILOT_DIRECT_LINE_SECRET: ""
-      DIRECT_LINE_BASE_URL: "https://directline.botframework.com/v3/directline"
-      JWT_SECRET: ""
-      JWT_EXPIRES_IN: "7d"
+      PORT: ${PORT}
+      DATABASE_URL: ${DATABASE_URL}
+      COPILOT_DIRECT_LINE_SECRET: ${COPILOT_DIRECT_LINE_SECRET}
+      DIRECT_LINE_BASE_URL: ${DIRECT_LINE_BASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
     ports:
       - "3000:3000"
     volumes:
